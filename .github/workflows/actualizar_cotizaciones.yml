@@ -33,7 +33,7 @@ jobs:
 
       - name: Depuración: Mostrar Contenido del Archivo
         run: |
-          head -n 5 credentials.json  # Muestra las primeras líneas del archivo (sin exponer secretos sensibles)
+          head -n 5 credentials.json  # Muestra las primeras líneas del archivo
 
       - name: Ejecutar script de actualización
         run: python actualizar.py
