@@ -1,0 +1,35 @@
+name: Actualizar Cotizaciones en BigQuery
+
+# Configuración para ejecutar el workflow diariamente
+on:
+  schedule:
+    - cron: "0 2 * * *"  # Ejecuta todos los días a las 2 AM UTC
+  workflow_dispatch:  # Permite ejecución manual desde GitHub
+
+jobs:
+  update_bigquery:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Paso 1: Clonar el repositorio
+      - name: Clonar repositorio
+        uses: actions/checkout@v3
+
+      # Paso 2: Configurar Python
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      # Paso 3: Instalar dependencias
+      - name: Instalar dependencias
+        run: |
+          pip install google-api-python-client google-auth google-cloud-bigquery pandas
+
+      # Paso 4: Crear archivo de credenciales
+      - name: Crear credenciales JSON
+        run: echo "${{ secrets.GCP_CREDENTIALS }}" > credentials.json
+
+      # Paso 5: Ejecutar el script
+      - name: Ejecutar script de actualización
+        run: python actualizar.py
