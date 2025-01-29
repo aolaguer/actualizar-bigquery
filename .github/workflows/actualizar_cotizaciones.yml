@@ -1,3 +1,31 @@
+name: Actualizar Cotizaciones en BigQuery
+
+on:
+  schedule:
+    - cron: "0 2 * * *"  # Ejecuta todos los días a las 2 AM UTC
+  workflow_dispatch:  # Permite ejecución manual
+
+jobs:
+  update_bigquery:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Clonar el repositorio
+      - name: Clonar repositorio
+        uses: actions/checkout@v3
+
+      # Configurar Python
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      # Instalar dependencias
+      - name: Instalar dependencias
+        run: |
+          pip install google-api-python-client google-auth google-cloud-bigquery pandas
+
+      # Crear credenciales JSON
       - name: Crear credenciales JSON
         run: |
           if [ -z "${{ secrets.GCP_CREDENTIALS }}" ]; then
@@ -5,7 +33,12 @@
           fi
           echo "${{ secrets.GCP_CREDENTIALS }}" > credentials.json
 
+      # Depurar credenciales JSON
       - name: Depurar credenciales JSON
         run: |
           echo "Contenido del archivo credentials.json:"
-          cat credentials.json
+          head -n 5 credentials.json  # Solo muestra las primeras líneas del archivo
+
+      # Ejecutar el script
+      - name: Ejecutar script de actualización
+        run: python actualizar.py
