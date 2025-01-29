@@ -27,7 +27,13 @@ jobs:
           echo "${{ secrets.GCP_CREDENTIALS }}" > credentials.json
           if [ ! -s credentials.json ]; then
             echo "Error: El archivo de credenciales está vacío" && exit 1
+          else
+            echo "El archivo de credenciales se creó correctamente."
           fi
+
+      - name: Depuración: Mostrar Contenido del Archivo
+        run: |
+          head -n 5 credentials.json  # Muestra las primeras líneas del archivo (sin exponer secretos sensibles)
 
       - name: Ejecutar script de actualización
         run: python actualizar.py
